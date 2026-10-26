@@ -13,8 +13,11 @@ class Cola:
         self.front = None
         self.back = None
 
-    def isEmpty(self):
-        return self.front is None
+    def isEmpty(self) -> bool:
+        if self.front == None:
+            return True
+        else:
+            return False
 
     def enqueue(self, new: Node):
         new.next = None

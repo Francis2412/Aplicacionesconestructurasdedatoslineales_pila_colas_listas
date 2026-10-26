@@ -15,8 +15,11 @@ class Stack:
     def __init__(self):
         self.top = None
 
-    def isEmpty(self):
-        return self.top is None
+    def isEmpty(self)->bool:
+        if self.top == None:
+             return True
+        else:
+            return False
 
     def push(self, new: Node):
         new.next = self.top
