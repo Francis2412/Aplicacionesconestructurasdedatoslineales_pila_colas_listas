@@ -7,7 +7,7 @@
 #modular en Python, utilizando las operaciones básicas de la estructura de datos Pila. 
 
 class Node:
-    def __init__(self, data:str):
+    def __init__(self, data):
         self.data = data
         self.next = None
 
@@ -16,43 +16,72 @@ class Stack:
         self.top = None
 
     def isEmpty(self):
-        return self.top == None
+        return self.top is None
 
     def push(self, new: Node):
-        if self.isEmpty():
-            self.top = new
-        else:
-            new.next = self.top
-            self.top = new
+        new.next = self.top
+        self.top = new
 
     def pop(self):
         if self.isEmpty():
             return None
-
         node = Node(self.top.data)
         self.top = self.top.next
         return node
 
-    def agregar_texto(texto, pila_deshacer, pila_rehacer, nuevo):
-        pila_deshacer.push(Node(texto))
+    def peek(self):
+        if self.isEmpty():
+            return None
+        return self.top.data
 
-        texto = texto + nuevo
+    def clear(self):
+        while not self.isEmpty():
+            self.pop()
 
-        while not pila_rehacer.isEmpty():
-            pila_rehacer.pop()
+def agregar_texto(texto, deshacer, rehacer, nuevo):
+    deshacer.push(Node(texto))
+    rehacer.clear()
+    return texto + nuevo
 
+def deshacer_accion(texto, deshacer, rehacer):
+    if deshacer.isEmpty():
+        print("No hay acciones para deshacer")
         return texto
+    rehacer.push(Node(texto))
+    return deshacer.pop().data
 
-
-    def deshacer(texto, pila_deshacer, pila_rehacer):
-        if not pila_deshacer.isEmpty():
-            pila_rehacer.push(Node(texto))
-            texto = pila_deshacer.pop().data
+def rehacer_accion(texto, deshacer, rehacer):
+    if rehacer.isEmpty():
+        print("No hay acciones para rehacer")
         return texto
+    deshacer.push(Node(texto))
+    return rehacer.pop().data
 
+def main():
+    deshacer = Stack()
+    rehacer = Stack()
+    texto = ""
+    while True:
+        print("***** Menu de opciones *****")
+        print("1..............Agregar texto")
+        print("2...................Deshacer")
+        print("3....................Rehacer")
+        print("4..................Ver texto")
+        print("5......................Salir")
+        opcion = int(input("Opción: "))
+        match opcion:
+            case 1:
+                texto = agregar_texto(texto, deshacer, rehacer, input("Texto a agregar: "))
+            case 2: 
+                texto = deshacer_accion(texto, deshacer, rehacer)
+            case 3:
+                texto = rehacer_accion(texto, deshacer, rehacer)
+            case 4:
+              print("Texto actual:", repr(texto))  
+            case 5:
+                break
+            case 6:
+                print("Opción inválida")
+        print("Estado:", repr(texto))
 
-    def rehacer(texto, pila_deshacer, pila_rehacer):
-        if not pila_rehacer.isEmpty():
-            pila_deshacer.push(Node(texto))
-            texto = pila_rehacer.pop().data
-        return texto
+main()
